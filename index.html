@@ -2,6 +2,8 @@
 <html lang="pt-br">
     <head>
         <style>
+            h1{text-align: center;}
+            h2{text-align: center;}
             .button{
                 border: none;
                 color: white;
@@ -14,6 +16,9 @@
                 transition-duration: 0.4s;
                 cursor: pointer;
             }
+            .button0{
+                
+            }
             .button1{
                 background-color: red;
                 color:black;
@@ -23,23 +28,58 @@
                 background: black;
                 color: white;
             }
+
  
         </style>
-        <meta charset="UTF-8" /><!--suporte de idiomas-->
+        <meta charset="UTF-8" /><!--metadados-->
         <title>PALAVRAS MAGICAS</title><!--titulo web-->
-        <link rel="" href=""/> <!--links para css (adicionar depois)-->
+        <link rel="" href=""/> <!--link para css (adicionar depois)-->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"><!--icones-->
     </head>
     <body>
         <!--menu inicial do jogo-->
+        <header>
         <h1>PALAVRAS MAGICAS</h1> <!--titulo-->
         <h2>Um mundo magico</h2> <!--subtitulo-->
-        <button type="button" onclick=""> <img src="" alt=""> </button><!--butão para personalização do professor-->
-        <button class="button button1" type="button" onclick="alert('ola, mundo!')">JOGAR</button> <!--botao de inciar o jogo(lembrar de colocar função "click")-->
-        <br>
-        <br>
-        <button class="button" type="button" onclick="">OPÇÔES</button>
-        <br>
-        <br>
-        <button class="button" type="button" onclick="">SAIR</button>
+        </header>
+        <main>
+            <nav class="menu-vertical">
+                <div class="btn-expandir">
+                    <i class="bi bi-gear"></i>
+                </div>
+                <ul>
+                    <li class="item-menu">
+                        <a href="#">
+                            <span class="icon"><i class="bi bi-tools"></i></span>
+                            <span class="txt-item">Personalizar</span>
+                        </a>
+                    </li>
+                    <li class="item-menu">
+                        <a href="#">
+                            <span class="icon"><i class="bi bi-c-circle"></i></span>
+                            <span class="txt-item">creditos</span>
+                        </a>
+                    </li>
+                    <li class="item-menu">
+                        <a href="#">
+                            <span class="icon"></span>
+                            <span class="txt-item"></span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <button class="button button1" type="button" onclick="">JOGAR</button> <!--botao de inciar o jogo(lembrar de colocar função "click")-->
+            <br>
+            <br>
+            <button class="button" type="button" onclick="">OPÇÔES</button>
+            <br>
+            <br>
+            <button class="button" type="button" onclIck="">SAIR</button>
+        </main>
+        <footer>
+            <p>&copy; Jogo "Palavras Magicas",todos os direitos reservados a equipe ALFA TECH; Estudantes de Engenahria de Software - UNEB(Alagoinhas-BA)-CAMPUS II</p>
+            <p>sobre a equipe ALFA TECH, <a href="">clique aqui</a></p>
+        </footer>    
     </body>
+ 
 </html>
