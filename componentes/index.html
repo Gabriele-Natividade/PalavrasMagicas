@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palavras Mágicas</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Tela Inicial -->
+    <div id="tela-inicial" class="tela ativa">
+        <div class="titulo-container">
+            <img src="../game_assets/images/titulo.png" alt="Palavras Mágicas" class="titulo-imagem">
+        </div>
+        <img src="../game_assets/images/character.png" alt="Mago" class="personagem-inicial">
+        <button id="btn-jogar" class="btn-principal">▶ JOGAR</button>
+    </div>
+
+    <!-- Tela do Jogo -->
+    <div id="tela-jogo" class="tela">
+        <div class="info-topo">
+            <h2 id="numero-fase">FASE 1</h2>
+            <img id="feedback-icone" src="" alt="Feedback">
+        </div>
+        
+        <div class="centro-jogo">
+            <div class="imagem-palavra-container">
+                <img id="imagem-fase" src="" alt="Imagem da fase">
+            </div>
+            <div id="palavra-container">
+                <!-- Espaços para as letras serão gerados pelo JS -->
+            </div>
+        </div>
+
+        <div id="letras-baralho">
+            <!-- Balões de letras serão gerados pelo JS -->
+        </div>
+        <img src="../game_assets/images/character.png" alt="Mago" class="personagem-jogo">
+    </div>
+
+    <!-- Tela de Sucesso (Fase Concluída) -->
+    <div id="tela-sucesso" class="tela">
+        <h1>PARABÉNS!</h1>
+        <img src="../game_assets/images/trophy.png" alt="Troféu" class="trofeu">
+        <div class="botoes-container">
+            <button id="btn-repetir-sucesso" class="btn-secundario">REPETIR</button>
+            <button id="btn-avancar" class="btn-principal">AVANÇAR</button>
+        </div>
+    </div>
+
+    <!-- Tela de Fim de Jogo -->
+    <div id="tela-fim-jogo" class="tela">
+        <h1>FIM DE JOGO!</h1>
+        <p>Você completou todos os desafios!</p>
+        <div class="botoes-container">
+            <button id="btn-jogar-novamente" class="btn-principal">JOGAR NOVAMENTE</button>
+            <button id="btn-sair" class="btn-secundario">SAIR</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
