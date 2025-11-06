@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,57 +11,82 @@
 </head>
 <body>
 
-    <!-- Tela Inicial -->
-    <div id="tela-inicial" class="tela ativa">
-        <div class="titulo-container">
-            <img src="../game_assets/images/titulo.png" alt="Palavras Mágicas" class="titulo-imagem">
-        </div>
-        <img src="../game_assets/images/characterE.png" alt="Mago" class="personagem-inicial">
-        <button id="btn-jogar" class="btn-principal">▶ JOGAR</button>
-    </div>
+    <div id="game-container">
 
-    <!-- Tela do Jogo -->
-    <div id="tela-jogo" class="tela">
-        <div class="info-topo">
-            <h2 id="numero-fase">FASE 1</h2>
-            <img id="feedback-icone" src="" alt="Feedback">
+        <!-- Tela Inicial -->
+        <div id="tela-inicial" class="tela ativa">
+            <img src="../game_assets/images/titulo_novo.png" alt="Palavras Mágicas" class="titulo-imagem">
+            <img src="../game_assets/images/mago_livro.png" alt="Mago" class="personagem-inicial">
+            <button id="btn-jogar" class="btn-texto-menu">JOGAR</button>
+            <button id="btn-opcoes" class="btn-texto-menu">OPÇÕES</button>
+            <button id="btn-creditos" class="btn-texto-menu">CRÉDITOS</button>
         </div>
-        
-        <div class="centro-jogo">
-            <div class="imagem-palavra-container">
-                <img id="imagem-fase" src="" alt="Imagem da fase">
+
+        <!-- Tela do Jogo -->
+        <div id="tela-jogo" class="tela">
+            <div class="info-topo">
+                <button id="btn-voltar-menu" class="btn-voltar-icon"></button>
+                <div id="numero-fase" class="fase-display">FASE 1</div>
             </div>
-            <div id="palavra-container">
-                <!-- Espaços para as letras serão gerados pelo JS -->
+            <div class="centro-jogo">
+                <div class="imagem-palavra-container">
+                    <img id="imagem-fase" src="" alt="Imagem da fase">
+                </div>
+                <div id="palavra-container"></div>
+            </div>
+            <div id="letras-baralho"></div>
+        </div>
+
+        <!-- Tela de Opções -->
+        <div id="tela-opcoes" class="tela">
+            <div class="painel-madeira-popup">
+                <button id="btn-fechar-opcoes" class="btn-fechar-popup">X</button>
+                <h2>OPÇÕES</h2>
+                <div class="opcao-item">
+                    <span>Música</span>
+                    <label class="switch">
+                        <input type="checkbox" id="toggle-musica" checked>
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="opcao-item">
+                    <span>Efeitos Sonoros</span>
+                    <label class="switch">
+                        <input type="checkbox" id="toggle-sfx" checked>
+                        <span class="slider round"></span>
+                    </label>
+                </div>
             </div>
         </div>
 
-        <div id="letras-baralho">
-            <!-- Balões de letras serão gerados pelo JS -->
+        <!-- Tela de Créditos -->
+        <div id="tela-creditos" class="tela">
+             <div class="painel-madeira-popup">
+                <button id="btn-fechar-creditos" class="btn-fechar-popup">X</button>
+                <h2>CRÉDITOS</h2>
+                <div class="creditos-lista">
+                    <p><strong>GABRIELE NATIVIDADE:</strong> GESTORA</p>
+                    <p><strong>MURILO M. MOURA:</strong> DESIGNER</p>
+                    <p><strong>LUCIANO SOUZA:</strong> PROGRAMADOR</p>
+                    <p><strong>JIMY KAEL CORREIA:</strong> PROGRAMADOR</p>
+                    <p><strong>GABRIEL SOUZA:</strong> PROGRAMADOR</p>
+                </div>
+            </div>
         </div>
-        <img src="../game_assets/images/characterE.png" alt="Mago" class="personagem-jogo">
+
+        <!-- TELA DE FIM DE JOGO ATUALIZADA -->
+        <div id="tela-fim-jogo" class="tela">
+            <div class="painel-madeira-popup">
+                <h2>PARABÉNS!</h2>
+                <!-- Frase adicionada -->
+                <p class="parabens-subtexto">Você concluiu todas as fases!</p>
+                <button id="btn-voltar-menu-final" class="btn-madeira btn-voltar">VOLTAR AO MENU</button>
+            </div>
+        </div>
     </div>
 
-    <!-- Tela de Sucesso (Fase Concluída) -->
-    <div id="tela-sucesso" class="tela">
-        <h1>PARABÉNS!</h1>
-        <img src="../game_assets/images/trophy.png" alt="Troféu" class="trofeu">
-        <div class="botoes-container">
-            <button id="btn-repetir-sucesso" class="btn-secundario">REPETIR</button>
-            <button id="btn-avancar" class="btn-principal">AVANÇAR</button>
-        </div>
-    </div>
-
-    <!-- Tela de Fim de Jogo -->
-    <div id="tela-fim-jogo" class="tela">
-        <h1>FIM DE JOGO!</h1>
-        <p>Você completou todos os desafios!</p>
-        <div class="botoes-container">
-            <button id="btn-jogar-novamente" class="btn-principal">JOGAR NOVAMENTE</button>
-            <button id="btn-sair" class="btn-secundario">SAIR</button>
-        </div>
-    </div>
-
+    <div id="modal-feedback" class="modal-overlay"></div>
+    <audio id="musica-fundo" src="../game_assets/sounds/background_music.mp3" loop></audio>
     <script src="script.js"></script>
 </body>
 </html>

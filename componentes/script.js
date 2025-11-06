@@ -1,54 +1,64 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Elementos da Interface
+
+    // --- SELEÇÃO DOS ELEMENTOS DO DOM ---
     const telaInicial = document.getElementById('tela-inicial');
     const telaJogo = document.getElementById('tela-jogo');
-    const telaSucesso = document.getElementById('tela-sucesso');
+    const telaOpcoes = document.getElementById('tela-opcoes');
+    const telaCreditos = document.getElementById('tela-creditos');
     const telaFimJogo = document.getElementById('tela-fim-jogo');
 
     const btnJogar = document.getElementById('btn-jogar');
-    const btnAvancar = document.getElementById('btn-avancar');
-    const btnRepetirSucesso = document.getElementById('btn-repetir-sucesso');
-    const btnJogarNovamente = document.getElementById('btn-jogar-novamente');
-    const btnSair = document.getElementById('btn-sair');
+    const btnOpcoes = document.getElementById('btn-opcoes');
+    const btnCreditos = document.getElementById('btn-creditos');
+    const btnVoltarMenuFinal = document.getElementById('btn-voltar-menu-final');
+    const btnVoltarMenu = document.getElementById('btn-voltar-menu');
+    const btnFecharOpcoes = document.getElementById('btn-fechar-opcoes');
+    const btnFecharCreditos = document.getElementById('btn-fechar-creditos');
 
     const numeroFaseEl = document.getElementById('numero-fase');
     const imagemFaseEl = document.getElementById('imagem-fase');
     const palavraContainerEl = document.getElementById('palavra-container');
     const letrasBaralhoEl = document.getElementById('letras-baralho');
-    const feedbackIconeEl = document.getElementById('feedback-icone');
 
-    // Sons (placeholders)
+    const modalFeedback = document.getElementById('modal-feedback');
+
+    const musicaFundo = document.getElementById('musica-fundo');
+    const toggleMusica = document.getElementById('toggle-musica');
+    const toggleSfx = document.getElementById('toggle-sfx');
     const somAcerto = new Audio('../game_assets/sounds/correct.mp3');
     const somErro = new Audio('../game_assets/sounds/incorrect.mp3');
-    const somSucesso = new Audio('../game_assets/sounds/success.mp3');
+    const somSucesso = new Audio('../game_assets/sounds/sucess.mp3');
 
-    // Variáveis de Estado do Jogo
+    // --- VARIÁVEIS DE ESTADO DO JOGO ---
     let niveis = [];
     let nivelAtual = 0;
     let palavraCorreta = '';
     let letrasAdivinhadas = [];
+    let musicaLigada = true;
+    let sfxLigados = true;
 
-    // Carregar os dados do jogo do JSON
+    // --- FUNÇÕES PRINCIPAIS ---
+
     async function carregarDadosJogo() {
         try {
             const response = await fetch('../game_assets/data/niveis.json');
             niveis = await response.json();
-            console.log('Níveis carregados com sucesso:', niveis);
         } catch (error) {
             console.error('Erro ao carregar os níveis do jogo:', error);
-            alert('Não foi possível carregar os dados do jogo. Por favor, verifique o arquivo niveis.json.');
+            alert('Não foi possível carregar os dados do jogo.');
         }
     }
 
-    function mostrarTela(tela) {
+    function mostrarTela(telaParaMostrar) {
         document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa'));
-        tela.classList.add('ativa');
+        telaParaMostrar.classList.add('ativa');
     }
 
     function iniciarJogo() {
         nivelAtual = 0;
         carregarNivel(nivelAtual);
         mostrarTela(telaJogo);
+        tocarMusica();
     }
 
     function carregarNivel(index) {
@@ -61,42 +71,33 @@ document.addEventListener('DOMContentLoaded', () => {
         palavraCorreta = nivel.palavra.toUpperCase();
         letrasAdivinhadas = Array(palavraCorreta.length).fill(null);
 
-        // Atualizar interface
         numeroFaseEl.textContent = `FASE ${nivel.nivel}`;
         imagemFaseEl.src = nivel.imagem;
-        feedbackIconeEl.style.visibility = 'hidden';
 
-        // Limpar containers
         palavraContainerEl.innerHTML = '';
         letrasBaralhoEl.innerHTML = '';
 
-        // Criar placeholders para a palavra
-        for (let i = 0; i < palavraCorreta.length; i++) {
+        palavraCorreta.split('').forEach(() => {
             const placeholder = document.createElement('div');
             placeholder.classList.add('letra-placeholder');
-            placeholder.dataset.index = i;
             palavraContainerEl.appendChild(placeholder);
-        }
+        });
 
-        // Criar baralho de letras
         const letrasDoBaralho = gerarLetrasParaBaralho(palavraCorreta);
-        const cores = ['#FF6347', '#4682B4', '#32CD32', '#FFD700', '#6A5ACD', '#EE82EE'];
-        
         letrasDoBaralho.forEach(letra => {
             const balao = document.createElement('div');
             balao.classList.add('letra-balao');
             balao.textContent = letra;
-            balao.style.backgroundColor = cores[Math.floor(Math.random() * cores.length)];
             balao.addEventListener('click', () => selecionarLetra(balao));
             letrasBaralhoEl.appendChild(balao);
         });
     }
 
     function gerarLetrasParaBaralho(palavra) {
-        const letrasDaPalavra = [...new Set(palavra.split(''))]; // Letras únicas da palavra
+        const letrasDaPalavra = [...new Set(palavra.split(''))];
         const alfabeto = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         let letrasExtras = [];
-        const totalLetrasNoBaralho = Math.min(letrasDaPalavra.length + 5, 12); // Limita o total de letras
+        const totalLetrasNoBaralho = Math.min(letrasDaPalavra.length + 4, 12);
 
         while (letrasExtras.length < totalLetrasNoBaralho - letrasDaPalavra.length) {
             const letraAleatoria = alfabeto[Math.floor(Math.random() * alfabeto.length)];
@@ -104,83 +105,140 @@ document.addEventListener('DOMContentLoaded', () => {
                 letrasExtras.push(letraAleatoria);
             }
         }
-
+        
         const baralho = [...letrasDaPalavra, ...letrasExtras];
-        // Embaralhar o baralho
         return baralho.sort(() => Math.random() - 0.5);
     }
 
     function selecionarLetra(balao) {
-        if (balao.classList.contains('usada')) return;
+        const proximoIndexVazio = letrasAdivinhadas.indexOf(null);
+        if (proximoIndexVazio === -1) return;
 
         const letraSelecionada = balao.textContent;
-        const proximoIndexVazio = letrasAdivinhadas.indexOf(null);
+        letrasAdivinhadas[proximoIndexVazio] = letraSelecionada;
 
-        if (proximoIndexVazio === -1) return; // Palavra já está completa
+        const placeholder = palavraContainerEl.children[proximoIndexVazio];
+        placeholder.textContent = letraSelecionada;
+        
+        tocarSom(somAcerto);
 
-        if (palavraCorreta[proximoIndexVazio] === letraSelecionada) {
-            // Acerto
-            letrasAdivinhadas[proximoIndexVazio] = letraSelecionada;
-            const placeholder = palavraContainerEl.children[proximoIndexVazio];
-            placeholder.textContent = letraSelecionada;
-            placeholder.classList.add('correta');
-            balao.classList.add('usada');
-            somAcerto.play();
-            
-            mostrarFeedback(true);
+        if (!letrasAdivinhadas.includes(null)) {
+            setTimeout(verificarPalavra, 500);
+        }
+    }
 
-            // Verificar se a palavra foi completada
-            if (!letrasAdivinhadas.includes(null)) {
-                nivelConcluido();
-            }
+    function verificarPalavra() {
+        const palavraFormada = letrasAdivinhadas.join('');
+        if (palavraFormada === palavraCorreta) {
+            nivelConcluido();
         } else {
-            // Erro
-            somErro.play();
-            balao.classList.add('incorreta');
-            mostrarFeedback(false);
-            setTimeout(() => {
-                balao.classList.remove('incorreta');
-            }, 500);
+            tentativaIncorreta();
         }
     }
     
-    function mostrarFeedback(correto) {
-        feedbackIconeEl.src = correto ? '../game_assets/images/correct.png' : '../game_assets/images/incorrect.png';
-        feedbackIconeEl.style.visibility = 'visible';
-        setTimeout(() => {
-            feedbackIconeEl.style.visibility = 'hidden';
-        }, 1000);
+    function nivelConcluido() {
+        tocarSom(somSucesso);
+        mostrarFeedback(true);
     }
 
-    function nivelConcluido() {
-        somSucesso.play();
-        setTimeout(() => {
-            mostrarTela(telaSucesso);
-        }, 1500);
+    function tentativaIncorreta() {
+        tocarSom(somErro);
+        mostrarFeedback(false);
     }
     
+    function resetarTentativa() {
+        letrasAdivinhadas.fill(null);
+        for (let placeholder of palavraContainerEl.children) {
+            placeholder.textContent = '';
+        }
+    }
+
+    function mostrarFeedback(isCorrect) {
+        let conteudoModal;
+        if (isCorrect) {
+            conteudoModal = `
+                <div class="feedback-modal-content">
+                    <h1>MUITO BEM!</h1>
+                    <button id="btn-continuar-modal" class="btn-feedback-modal">CONTINUAR</button>
+                </div>
+            `;
+        } else {
+            conteudoModal = `
+                <div class="feedback-modal-content">
+                    <h1>PALAVRA ERRADA!</h1>
+                    <button id="btn-tentar-novamente-modal" class="btn-feedback-modal">TENTAR NOVAMENTE</button>
+                </div>
+            `;
+        }
+        
+        modalFeedback.innerHTML = conteudoModal;
+        modalFeedback.classList.add('visivel');
+
+        if (isCorrect) {
+            document.getElementById('btn-continuar-modal').addEventListener('click', () => {
+                modalFeedback.classList.remove('visivel');
+                avancarNivel();
+            });
+        } else {
+            document.getElementById('btn-tentar-novamente-modal').addEventListener('click', () => {
+                modalFeedback.classList.remove('visivel');
+                resetarTentativa();
+            });
+        }
+    }
+
     function avancarNivel() {
         nivelAtual++;
         carregarNivel(nivelAtual);
         mostrarTela(telaJogo);
     }
-
+    
     function finalizarJogo() {
         mostrarTela(telaFimJogo);
+        musicaFundo.pause();
     }
 
-    // Event Listeners dos botões
+    function tocarSom(som) {
+        if (sfxLigados) {
+            som.currentTime = 0;
+            som.play();
+        }
+    }
+    
+    function tocarMusica() {
+        if (musicaLigada) {
+            musicaFundo.play();
+        } else {
+            musicaFundo.pause();
+        }
+    }
+
+    // --- EVENT LISTENERS ---
+
     btnJogar.addEventListener('click', iniciarJogo);
-    btnAvancar.addEventListener('click', avancarNivel);
-    btnRepetirSucesso.addEventListener('click', () => {
-        carregarNivel(nivelAtual);
-        mostrarTela(telaJogo);
+    btnOpcoes.addEventListener('click', () => mostrarTela(telaOpcoes));
+    btnCreditos.addEventListener('click', () => mostrarTela(telaCreditos));
+
+    btnVoltarMenuFinal.addEventListener('click', () => {
+        mostrarTela(telaInicial);
     });
-    btnJogarNovamente.addEventListener('click', iniciarJogo);
-    btnSair.addEventListener('click', () => {
-        mostrarTela(telaInicial); // Volta para a tela inicial
+    
+    btnVoltarMenu.addEventListener('click', () => {
+        musicaFundo.pause();
+        mostrarTela(telaInicial);
     });
 
-    // Iniciar o carregamento dos dados
+    btnFecharOpcoes.addEventListener('click', () => mostrarTela(telaInicial));
+    btnFecharCreditos.addEventListener('click', () => mostrarTela(telaInicial));
+
+    toggleMusica.addEventListener('change', (e) => {
+        musicaLigada = e.target.checked;
+        tocarMusica();
+    });
+
+    toggleSfx.addEventListener('change', (e) => {
+        sfxLigados = e.target.checked;
+    });
+
     carregarDadosJogo();
 });

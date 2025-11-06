@@ -1,26 +1,27 @@
 [
   {
     "nivel": 1,
-    "palavra": "BOLA",
-    "imagem": "../game_assets/images/bola.png",
-    "som_sucesso": "../game_assets/sounds/success.mp3"
+    "palavra": "SOL",
+    "imagem": "../game_assets/images/sol.png"
   },
   {
     "nivel": 2,
     "palavra": "GATO",
-    "imagem": "../game_assets/images/gato.png",
-    "som_sucesso": "../game_assets/sounds/success.mp3"
+    "imagem": "../game_assets/images/gato.png"
   },
   {
     "nivel": 3,
-    "palavra": "SOL",
-    "imagem": "../game_assets/images/sol.png",
-    "som_sucesso": "../game_assets/sounds/success.mp3"
+    "palavra": "BOLA",
+    "imagem": "../game_assets/images/bola.png"
   },
   {
     "nivel": 4,
     "palavra": "RUA",
-    "imagem": "../game_assets/images/rua.png",
-    "som_sucesso": "../game_assets/sounds/success.mp3"
+    "imagem": "../game_assets/images/rua.png"
+  },
+  {
+    "nivel": 5,
+    "palavra": "ELEFANTE",
+    "imagem": "../game_assets/images/elefante.png"
   }
 ]
