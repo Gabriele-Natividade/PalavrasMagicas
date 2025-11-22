@@ -25,25 +25,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const musicaFundo = document.getElementById('musica-fundo');
     const toggleMusica = document.getElementById('toggle-musica');
     const toggleSfx = document.getElementById('toggle-sfx');
+
+    // --- SONS ---
+    const somClique = new Audio("../game_assets/sounds/click.mp3");
     const somAcerto = new Audio('../game_assets/sounds/correct.mp3');
     const somErro = new Audio('../game_assets/sounds/incorrect.mp3');
     const somSucesso = new Audio('../game_assets/sounds/sucess.mp3');
 
-
-   // SOM DE CLIQUE PARA TODOS OS BOTÕES
-const somClique = new Audio("../game_assets/sounds/click.mp3");
-
-document.querySelectorAll("button").forEach(botao => {
-    botao.addEventListener("click", () => {
-        if (sfxLigados) {
-    somClique.currentTime = 0;
-    somClique.play();
-}       
-    });
-});
-    
-
-    // --- VARIÁVEIS DE ESTADO DO JOGO ---
+    // --- VARIÁVEIS ---
     let niveis = [];
     let nivelAtual = 0;
     let palavraCorreta = '';
@@ -51,8 +40,17 @@ document.querySelectorAll("button").forEach(botao => {
     let musicaLigada = true;
     let sfxLigados = true;
 
-    // --- FUNÇÕES PRINCIPAIS ---
+    // --- SOM DE CLIQUE EM TODOS OS BOTÕES ---
+    document.querySelectorAll("button").forEach(botao => {
+        botao.addEventListener("click", () => {
+            if (sfxLigados) {
+                somClique.currentTime = 0;
+                somClique.play();
+            }
+        });
+    });
 
+    // --- FUNÇÕES PRINCIPAIS ---
     async function carregarDadosJogo() {
         try {
             const response = await fetch('../game_assets/data/niveis.json');
@@ -72,7 +70,23 @@ document.querySelectorAll("button").forEach(botao => {
         nivelAtual = 0;
         carregarNivel(nivelAtual);
         mostrarTela(telaJogo);
-        tocarMusica();
+    }
+
+    // Música de fundo
+    function tocarMusica() {
+    musicaLigada = true;
+
+    if (musicaFundo.paused) {
+        musicaFundo.play();
+    }
+}
+
+    // Sons gerais
+    function tocarSom(som) {
+        if (sfxLigados) {
+            som.currentTime = 0;
+            som.play();
+        }
     }
 
     function carregarNivel(index) {
@@ -119,7 +133,7 @@ document.querySelectorAll("button").forEach(botao => {
                 letrasExtras.push(letraAleatoria);
             }
         }
-        
+
         const baralho = [...letrasDaPalavra, ...letrasExtras];
         return baralho.sort(() => Math.random() - 0.5);
     }
@@ -133,7 +147,7 @@ document.querySelectorAll("button").forEach(botao => {
 
         const placeholder = palavraContainerEl.children[proximoIndexVazio];
         placeholder.textContent = letraSelecionada;
-        
+
         tocarSom(somAcerto);
 
         if (!letrasAdivinhadas.includes(null)) {
@@ -149,7 +163,7 @@ document.querySelectorAll("button").forEach(botao => {
             tentativaIncorreta();
         }
     }
-    
+
     function nivelConcluido() {
         tocarSom(somSucesso);
         mostrarFeedback(true);
@@ -159,7 +173,7 @@ document.querySelectorAll("button").forEach(botao => {
         tocarSom(somErro);
         mostrarFeedback(false);
     }
-    
+
     function resetarTentativa() {
         letrasAdivinhadas.fill(null);
         for (let placeholder of palavraContainerEl.children) {
@@ -184,7 +198,7 @@ document.querySelectorAll("button").forEach(botao => {
                 </div>
             `;
         }
-        
+
         modalFeedback.innerHTML = conteudoModal;
         modalFeedback.classList.add('visivel');
 
@@ -206,41 +220,18 @@ document.querySelectorAll("button").forEach(botao => {
         carregarNivel(nivelAtual);
         mostrarTela(telaJogo);
     }
-    
+
     function finalizarJogo() {
         mostrarTela(telaFimJogo);
-        musicaFundo.pause();
     }
 
-    function tocarSom(som) {
-        if (sfxLigados) {
-            som.currentTime = 0;
-            som.play();
-        }
-    }
-    
-    function tocarMusica() {
-        if (musicaLigada) {
-            musicaFundo.play();
-        } else {
-            musicaFundo.pause();
-        }
-    }
-
-    // --- EVENT LISTENERS ---
-
+    // --- EVENTOS ---
     btnJogar.addEventListener('click', iniciarJogo);
     btnOpcoes.addEventListener('click', () => mostrarTela(telaOpcoes));
     btnCreditos.addEventListener('click', () => mostrarTela(telaCreditos));
 
-    btnVoltarMenuFinal.addEventListener('click', () => {
-        mostrarTela(telaInicial);
-    });
-    
-    btnVoltarMenu.addEventListener('click', () => {
-        musicaFundo.pause();
-        mostrarTela(telaInicial);
-    });
+    btnVoltarMenuFinal.addEventListener('click', () => mostrarTela(telaInicial));
+    btnVoltarMenu.addEventListener('click', () => mostrarTela(telaInicial));
 
     btnFecharOpcoes.addEventListener('click', () => mostrarTela(telaInicial));
     btnFecharCreditos.addEventListener('click', () => mostrarTela(telaInicial));
