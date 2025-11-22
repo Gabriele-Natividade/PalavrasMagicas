@@ -29,6 +29,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const somErro = new Audio('../game_assets/sounds/incorrect.mp3');
     const somSucesso = new Audio('../game_assets/sounds/sucess.mp3');
 
+
+   // SOM DE CLIQUE PARA TODOS OS BOTÕES
+const somClique = new Audio("../game_assets/sounds/click.mp3");
+
+document.querySelectorAll("button").forEach(botao => {
+    botao.addEventListener("click", () => {
+        if (sfxLigados) {
+    somClique.currentTime = 0;
+    somClique.play();
+}       
+    });
+});
+    
+
     // --- VARIÁVEIS DE ESTADO DO JOGO ---
     let niveis = [];
     let nivelAtual = 0;
