@@ -2,26 +2,31 @@
   {
     "nivel": 1,
     "palavra": "SOL",
-    "imagem": "../game_assets/images/sol.png"
+    "imagem": "../game_assets/images/sol.webp",
+    "letrasEmbaralhadas": ["S", "O", "L", "A", "E"]
   },
   {
     "nivel": 2,
     "palavra": "GATO",
-    "imagem": "../game_assets/images/gato.png"
+    "imagem": "../game_assets/images/gato.webp",
+    "letrasEmbaralhadas": ["G", "A", "T", "O", "B", "C", "D"]
   },
   {
     "nivel": 3,
     "palavra": "BOLA",
-    "imagem": "../game_assets/images/bola.png"
+    "imagem": "../game_assets/images/bola.webp",
+    "letrasEmbaralhadas": ["B", "O", "L", "A", "X", "Y", "Z"]
   },
   {
     "nivel": 4,
     "palavra": "RUA",
-    "imagem": "../game_assets/images/rua.png"
+    "imagem": "../game_assets/images/rua.webp",
+    "letrasEmbaralhadas": ["R", "U", "A", "M", "N", "P"]
   },
   {
     "nivel": 5,
     "palavra": "ELEFANTE",
-    "imagem": "../game_assets/images/elefante.png"
+    "imagem": "../game_assets/images/elefante.webp",
+    "letrasEmbaralhadas": ["E", "L", "E", "F", "A", "N", "T", "E", "R", "S", "I"]
   }
 ]

@@ -1,30 +1,23 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Palavras Mágicas</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Mystery+Quest&display=swap" rel="stylesheet">
 </head>
-
 <body>
-
     <div id="game-container">
-
         <!-- Tela Inicial -->
         <div id="tela-inicial" class="tela ativa">
-            <img src="../game_assets/images/titulo_novo.png" alt="Palavras Mágicas" class="titulo-imagem">
-            <img src="../game_assets/images/mago_livro.png" alt="Mago" class="personagem-inicial">
-            <button id="btn-jogar" class="btn-texto-menu">JOGAR</button>
-            <button id="btn-opcoes" class="btn-texto-menu">OPÇÕES</button>
-            <button id="btn-creditos" class="btn-texto-menu">CRÉDITOS</button>
+            <img src="../game_assets/images/titulo_novo.webp" alt="Palavras Mágicas" class="titulo-imagem">
+            <img src="../game_assets/images/mago_livro.webp" alt="Mago" class="personagem-inicial">
+            
+            <div class="menu-botoes">
+                <button id="btn-jogar" class="btn-texto-menu">JOGAR</button>
+                <button id="btn-opcoes" class="btn-texto-menu">OPÇÕES</button>
+                <button id="btn-creditos" class="btn-texto-menu">CRÉDITOS</button>
+            </div>
         </div>
 
         <!-- Tela do Jogo -->
@@ -37,7 +30,11 @@
                 <div class="imagem-palavra-container">
                     <img id="imagem-fase" src="" alt="Imagem da fase">
                 </div>
-                <div id="palavra-container"></div>
+                <!-- Container da Palavra e Botão Backspace -->
+                <div class="area-input-palavra">
+                    <div id="palavra-container"></div>
+                    <button id="btn-backspace" title="Apagar Letra">←</button>
+                </div>
             </div>
             <div id="letras-baralho"></div>
         </div>
@@ -47,19 +44,15 @@
             <div class="painel-madeira-popup">
                 <button id="btn-fechar-opcoes" class="btn-fechar-popup">X</button>
                 <h2>OPÇÕES</h2>
+                
                 <div class="opcao-item">
                     <span>Música</span>
-                    <label class="switch">
-                        <input type="checkbox" id="toggle-musica" checked>
-                        <span class="slider round"></span>
-                    </label>
+                    <input type="range" id="slider-musica" min="0" max="1" step="0.1" value="0.5">
                 </div>
+                
                 <div class="opcao-item">
-                    <span>Efeitos Sonoros</span>
-                    <label class="switch">
-                        <input type="checkbox" id="toggle-sfx" checked>
-                        <span class="slider round"></span>
-                    </label>
+                    <span>Efeitos</span>
+                    <input type="range" id="slider-sfx" min="0" max="1" step="0.1" value="1.0">
                 </div>
             </div>
         </div>
@@ -70,29 +63,30 @@
                 <button id="btn-fechar-creditos" class="btn-fechar-popup">X</button>
                 <h2>CRÉDITOS</h2>
                 <div class="creditos-lista">
-                    <p><strong>GABRIELE NATIVIDADE:</strong> GESTORA</p>
-                    <p><strong>MURILO M. MOURA:</strong> DESIGNER</p>
-                    <p><strong>LUCIANO SOUZA:</strong> PROGRAMADOR</p>
-                    <p><strong>JIMY KAEL CORREIA:</strong> PROGRAMADOR</p>
-                    <p><strong>GABRIEL SOUZA:</strong> PROGRAMADOR</p>
+                    <p>Gabriele Natividade: Gestora</p>
+                    <p>Murilo M. Moura: Designer</p>
+                    <p>Luciano Souza: Programador</p>
+                    <p>Jimy Kael Correia: Programador</p>
+                    <p>Gabriel Souza: Programador</p>
                 </div>
             </div>
         </div>
 
-        <!-- TELA DE FIM DE JOGO ATUALIZADA -->
+        <!-- TELA DE FIM DE JOGO -->
         <div id="tela-fim-jogo" class="tela">
-            <div class="painel-madeira-popup">
+            <div class="painel-madeira-popup conteudo-fim-jogo">
                 <h2>PARABÉNS!</h2>
-                <!-- Frase adicionada -->
-                <p class="parabens-subtexto">Você concluiu todas as fases!</p>
-                <button id="btn-voltar-menu-final" class="btn-madeira btn-voltar">VOLTAR AO MENU</button>
+                <img src="../game_assets/images/trophy.webp" alt="Troféu" class="trofeu-img">
+                <p class="texto-vitoria">Você concluiu todas as fases!</p>
+                <button id="btn-voltar-menu-final" class="btn-madeira">VOLTAR AO MENU</button>
             </div>
         </div>
     </div>
 
     <div id="modal-feedback" class="modal-overlay"></div>
+    
     <audio id="musica-fundo" src="../game_assets/sounds/background_music.mp3" loop></audio>
+    
     <script src="script.js"></script>
 </body>
-
 </html>

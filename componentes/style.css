@@ -1,159 +1,646 @@
-/* --- ESTILOS GERAIS E RESET --- */
-* { box-sizing: border-box; margin: 0; padding: 0; }
+/* ===== VARIÁVEIS CSS ===== */
+:root {
+    /* Cores */
+    --cor-primaria: #5C3D2E;
+    --cor-secundaria: #FFD700;
+    --cor-destaque: #f39c12;
+    --cor-erro: #e74c3c;
+    --cor-sucesso: #2ecc71;
+    --cor-texto: #fff;
+    --cor-sombra: rgba(0, 0, 0, 0.5);
+    
+    /* Tamanhos */
+    --tamanho-fonte-base: 1rem;
+    --borda-radius: 12px;
+    --espacamento-padrao: 1rem;
+}
+
+/* ===== ESTILOS GERAIS E RESET ===== */
+* { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+}
 
 body {
-    font-family: 'Lilita One', cursive;
-    background-image: url('../game_assets/images/background_novo.png');
-    background-size: cover; background-position: center; background-repeat: no-repeat;
-    height: 100vh; display: flex; justify-content: center; align-items: center;
-    overflow: hidden; color: #fff;
+    font-family: 'Super Chiby', sans-serif;
+    background-image: url('../game_assets/images/background_novo.webp');
+    background-size: cover; 
+    background-position: center; 
+    background-repeat: no-repeat;
+    height: 100vh; 
+    width: 100vw;
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    overflow: hidden; 
+    color: var(--cor-texto);
+    user-select: none;
 }
 
 #game-container {
-    width: 100%; height: 100%; position: relative; max-width: 1280px;
-    max-height: 720px; aspect-ratio: 16/9;
+    width: 100%; 
+    height: 100%; 
+    position: relative; 
+    max-width: 1280px; 
+    max-height: 720px; 
+    aspect-ratio: 16/9;
 }
 
+/* ===== COMPONENTES DE TELA ===== */
 .tela {
-    display: none; width: 100%; height: 100%; position: absolute;
-    align-items: center; justify-content: center;
+    display: none; 
+    width: 100%; 
+    height: 100%; 
+    position: absolute;
+    top: 0; 
+    left: 0;
+    flex-direction: column;
+    align-items: center; 
+    justify-content: center;
+    z-index: 10;
 }
-.tela.ativa { display: flex; }
 
-/* --- TELA INICIAL --- */
+.tela.ativa { 
+    display: flex; 
+    z-index: 20; 
+}
+
+/* ===== TELA INICIAL ===== */
 #tela-inicial .titulo-imagem {
-    position: absolute; width: 50vw; max-width: 600px; top: 10%; left: 50%; transform: translateX(-50%);
+    position: absolute; 
+    width: 55vw; 
+    max-width: 600px; 
+    top: 5%; 
+    left: 50%; 
+    transform: translateX(-50%);
+    object-fit: contain; 
+    z-index: 2;
 }
+
 #tela-inicial .personagem-inicial {
-    position: absolute; width: 28vw; max-width: 320px; bottom: 5%; left: 8%;
+    position: absolute; 
+    width: 30vw; 
+    max-width: 350px; 
+    bottom: 2%; 
+    left: 5%;
+    object-fit: contain; 
+    z-index: 1;
 }
+
+.menu-botoes {
+    position: absolute;
+    top: 55%; 
+    left: 50%; 
+    transform: translate(-50%, -50%);
+    display: flex; 
+    flex-direction: column; 
+    gap: 1vh; 
+    align-items: center;
+    width: 100%; 
+    z-index: 3;
+    padding-top: 10vh;
+}
+
 .btn-texto-menu {
-    position: absolute; left: 50%; transform: translateX(-50%); background: none; border: none;
-    font-family: "Mystery Quest", system-ui; font-size: 3vw; color: white;
-    text-shadow: 2px 2px 5px rgba(0,0,0,0.7); cursor: pointer; transition: transform 0.2s ease-in-out;
+    background: none; 
+    border: none;
+    transform: translate(0%, 20%);
+    font-family: 'Super Chiby', sans-serif; 
+    color: var(--cor-texto);
+    text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    cursor: pointer; 
+    transition: transform 0.2s ease-in-out;
+    padding: 5px;
+    line-height: 1;
 }
-.btn-texto-menu:hover { transform: translateX(-50%) scale(1.1); }
-#btn-jogar { bottom: 35%; font-size: 5vw; }
-#btn-opcoes { bottom: 25%; }
-#btn-creditos { bottom: 15%; font-size: 2vw;}
 
-/* --- TELA DE JOGO --- */
-#tela-jogo { flex-direction: column; justify-content: center; gap: 5vh; padding: 2% 5%; }
-.info-topo { position: absolute; top: 3%; width: 90%; display: flex; justify-content: space-between; align-items: center; }
-.fase-display { background-color: rgba(0, 0, 0, 0.5); padding: 10px 25px; border-radius: 15px; border: 2px solid #fff; font-size: 3vw; position: absolute; top: 0; right: 0; }
+.btn-texto-menu:hover { 
+    color: var(--cor-secundaria); 
+}
 
-.btn-voltar-icon { width: 6vh; height: 6vh; max-width: 50px; max-height: 50px; background-image: url('../game_assets/images/btn_voltar_icon.png'); background-size: contain; border: none; background-color: transparent; cursor: pointer; position: absolute; top: 0; left: 0; }
+.btn-madeira:hover { 
+    color: var(--cor-secundaria); 
+}
 
-.centro-jogo { display: flex; flex-direction: column; align-items: center; gap: 3vh; }
-#imagem-fase { height: 40vh; max-height: 320px; width: auto; aspect-ratio: 1/1; border-radius: 20px; border: 8px solid #f39c12; background-color: white; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+#btn-jogar { font-size: 8vw; }
+#btn-opcoes { font-size: 5vw; }
+#btn-creditos { font-size: 4vw; }
 
-#palavra-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.5vw; }
+/* ===== TELA DE JOGO ===== */
+#tela-jogo { 
+    justify-content: flex-start; 
+    padding-top: 2vh; 
+}
 
-.letra-placeholder { width: 7vw; height: 7vw; max-width: 70px; max-height: 70px; border: 4px dashed #f39c12; background-color: #FFF2D8; border-radius: 10px; font-size: 4vw; color: #5C3D2E; font-weight: bold; display: flex; justify-content: center; align-items: center; }
-#letras-baralho { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.5vw; padding: 1vw; max-width: 95%; }
-.letra-balao { width: 8vw; height: 8vw; max-width: 75px; max-height: 75px; display: flex; justify-content: center; align-items: center; font-size: 4.5vw; color: white; background-color: #A4B0F5; border-radius: 15px; border-bottom: 6px solid #6A79DB; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; -webkit-text-stroke: 2px black; }
-.letra-balao:hover { transform: translateY(-5px); }
+.info-topo { 
+    width: 95%; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 1vh;
+}
 
-/* --- PAINÉIS POP-UP (OPÇÕES, CRÉDITOS, FIM DE JOGO) --- */
+.fase-display { 
+    background-color: rgba(0, 0, 0, 0.6); 
+    padding: 0.5vh 2vw; 
+    border-radius: 20px; 
+    border: 3px solid var(--cor-texto); 
+    font-size: 3.5vw; 
+    text-shadow: 2px 2px 4px #000;
+}
+
+.btn-voltar-icon { 
+    width: 8vh; 
+    height: 8vh; 
+    background-image: url('../game_assets/images/btn_voltar_icon.webp'); 
+    background-size: contain; 
+    background-repeat: no-repeat; 
+    border: none; 
+    background-color: transparent; 
+    cursor: pointer; 
+    transition: transform 0.2s;
+}
+
+.btn-voltar-icon:hover { 
+    transform: scale(1.1); 
+}
+
+.centro-jogo { 
+    display: flex;
+    position: absolute;
+    top: 50%; 
+    left: 50%;
+    transform: translate(-50%, -50%);
+    flex-direction: column; 
+    align-items: center; 
+    gap: 2vh; 
+    width: 100%;
+    flex-grow: 1; 
+    justify-content: center;
+}
+
+#imagem-fase {
+    height: 50vh;
+    max-height: 850px; 
+    position: absolute;
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -90%);
+    width: auto; 
+    border-radius: 20px; 
+    border: 6px solid var(--cor-destaque); 
+    background-color: white; 
+    box-shadow: 0 10px 20px var(--cor-sombra);
+    object-fit: contain; 
+}
+
+.area-input-palavra {
+    display: flex; 
+    position: absolute;
+    top: 50%;
+    align-items: center; 
+    justify-content: center; 
+    gap: 1.5vw;
+    margin-top: 10vh;
+}
+
+#palavra-container { 
+    display: flex; 
+    flex-wrap: wrap; 
+    justify-content: center; 
+    gap: 1vw; 
+}
+
+.letra-placeholder { 
+    width: 9vw; 
+    height: 9vw; 
+    max-width: 80px; 
+    max-height: 80px; 
+    border: 4px dashed var(--cor-destaque); 
+    background-color: #FFF2D8; 
+    border-radius: var(--borda-radius); 
+    font-size: 5vw; 
+    color: var(--cor-primaria); 
+    font-weight: bold; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+}
+
+#btn-backspace {
+    width: 9vw; 
+    height: 9vw; 
+    max-width: 70px; 
+    max-height: 70px;
+    background-color: var(--cor-erro); 
+    border: 4px solid #c0392b; 
+    border-radius: var(--borda-radius);
+    color: var(--cor-texto); 
+    font-family: 'Super Chiby', sans-serif; 
+    font-size: 4vw;
+    cursor: pointer; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    box-shadow: 0 6px 0 #922b21; 
+    transition: transform 0.1s, box-shadow 0.1s;
+    padding-bottom: 1vh; 
+}
+
+#btn-backspace:active { 
+    transform: translateY(6px); 
+    box-shadow: none; 
+}
+
+/* Área das letras */
+#letras-baralho { 
+    display: flex; 
+    flex-wrap: wrap; 
+    justify-content: center; 
+    gap: 1.5vw; 
+    padding: 1vh 2vw 6vh 2vw; 
+    width: 98%; 
+    margin-top: auto; 
+}
+
+.letra-balao { 
+    width: 10vw; 
+    height: 10vw; 
+    max-width: 90px; 
+    max-height: 90px; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    font-size: 6vw; 
+    color: var(--cor-texto); 
+    background-color: #A4B0F5; 
+    border-radius: 18px; 
+    border-bottom: 6px solid #6A79DB; 
+    cursor: pointer; 
+    transition: transform 0.2s; 
+    text-shadow: 2px 2px 0 #000; 
+    -webkit-text-stroke: 1px black;
+}
+
+.letra-balao:hover { 
+    transform: translateY(-6px); 
+    filter: brightness(1.1); 
+}
+
+/* ===== PAINÉIS POP-UP (MADEIRA) ===== */
 .painel-madeira-popup {
-    background-image: url('../game_assets/images/painel_madeira.png');
+    background-image: url('../game_assets/images/painel_madeira.webp');
     background-size: 100% 100%;
-    width: 70vw; max-width: 900px;
-    aspect-ratio: 2 / 1;
-    padding: 8% 5% 5% 5%;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 2vh;
-    color: #fff; text-shadow: 2px 2px 2px #5C3D2E;
+    width: 100vw; 
+    max-width: 800px;
+    min-height: 60vh; 
+    padding: 18% 8% 10% 8%; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: flex-start; 
+    gap: 1.5vh;
+    color: var(--cor-texto); 
+    text-shadow: 2px 2px 2px var(--cor-primaria);
     position: relative;
 }
 
 .painel-madeira-popup h2 {
-    position: absolute; top: 0; left: 50%; transform: translate(-50%, -50%);
-    font-size: 4.5vw; color: white; -webkit-text-stroke: 2px #5C3D2E;
+    position: absolute; 
+    top: 5%;
+    left: 50%; 
+    transform: translateX(-50%);
+    font-size: 6vw; 
+    color: var(--cor-secundaria); 
+    -webkit-text-stroke: 2px var(--cor-primaria);
+    margin: 0;
+    white-space: nowrap;
+    z-index: 2;
 }
-.creditos-lista { font-size: 1.4vw; line-height: 1.8; text-align: center; margin-bottom: 5%;}
-.opcao-item { display: flex; justify-content: space-between; align-items: center; width: 70%; max-width: 450px; font-size: 2.5vw; }
-.btn-fechar-popup {
-    position: absolute; top: -15px; right: -15px;
-    background: none; border: none; color: white; font-size: 4rem; font-family: 'Lilita One', cursive;
-    cursor: pointer; text-shadow: 2px 2px 4px #000; transition: transform 0.2s;
-}
-.btn-fechar-popup:hover { transform: scale(1.2); }
-.parabens-subtexto { font-size: 2vw; color: white; text-shadow: 2px 2px 4px #000; }
 
-/* --- MODAL DE FEEDBACK (ERRO, SUCESSO) --- */
-.modal-overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background-color: rgba(0, 0, 0, 0.6); display: none;
-    justify-content: center; align-items: center; z-index: 1000;
+.creditos-lista { 
+    font-size: 2.5vw; 
+    line-height: 1.5; 
+    text-align: center; 
+    color: var(--cor-texto); 
+    text-shadow: 1px 1px 3px #000;
+    width: 100%; 
+    margin-top: -15vh;
 }
-.modal-overlay.visivel { display: flex; }
+
+.creditos-lista p { 
+    margin-bottom: 5px; 
+}
+
+.opcao-item { 
+    display: flexbox; 
+    transform: translate(0%, -50%);
+    flex-direction: column; 
+    align-items: center; 
+    text-align: center;
+    width: 90%; 
+    gap: 0.5vh; 
+    margin-bottom: 1vh;
+    margin-top: 2vh;
+}
+
+.opcao-item span { 
+    font-size: 5vw; 
+    color: var(--cor-texto); 
+    text-shadow: 2px 2px 0 #000; 
+}
+
+input[type=range] {
+    -webkit-appearance: none; 
+    width: 100%; 
+    background: transparent;
+}
+
+input[type=range]:focus { 
+    outline: none; 
+}
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; 
+    height: 30px; 
+    width: 30px;
+    border-radius: 50%; 
+    background: var(--cor-secundaria); 
+    border: 3px solid var(--cor-texto);
+    cursor: pointer; 
+    margin-top: -10px; 
+    box-shadow: 0px 3px 5px var(--cor-sombra);
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+    width: 100%; 
+    height: 10px; 
+    cursor: pointer;
+    background: var(--cor-primaria); 
+    border-radius: 10px; 
+    border: 2px solid #CCAFA5;
+}
+
+.btn-fechar-popup {
+    position: absolute; 
+    top: 22%;
+    right: 10%;
+    width: 45px; 
+    height: 45px;
+    background-color: #c0392b;
+    border: 3px solid var(--cor-texto);
+    border-radius: var(--borda-radius);
+    color: var(--cor-texto); 
+    font-size: 2rem; 
+    font-family: 'Super Chiby', cursive;
+    cursor: pointer; 
+    box-shadow: 2px 2px 5px var(--cor-sombra);
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    padding-bottom: 5px;
+    z-index: 50;
+}
+
+.btn-fechar-popup:hover { 
+    background-color: var(--cor-erro); 
+    transform: scale(1.1); 
+}
+
+/* ===== TELA FIM DE JOGO ===== */
+.conteudo-fim-jogo {
+    justify-content: center;
+    padding-top: 20%;
+    gap: 1vh;
+}
+
+.trofeu-img {
+    transform: translate(0%, -25%);
+    height: 35vh;
+    width: auto;
+    margin: 1vh 0;
+}
+
+.texto-vitoria {
+    transform: translate(0%, -170%);
+    font-size: 6vh;
+    text-align: center;
+    margin-bottom: 1vh;
+    line-height: 1.2;
+    text-shadow: 1px 1px 3px #000;
+}
+
+/* ===== MODAL DE FEEDBACK ===== */
+.modal-overlay {
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8); 
+    display: none;
+    justify-content: center; 
+    align-items: center; 
+    z-index: 1000;
+}
+
+.modal-overlay.visivel { 
+    display: flex; 
+}
 
 .feedback-modal-content {
-    background-image: url('../game_assets/images/painel_madeira.png');
+    background-image: url('../game_assets/images/painel_madeira.webp');
     background-size: 100% 100%;
-    width: 50vw; max-width: 650px;
-    aspect-ratio: 3 / 1;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 2vh; padding: 5%;
+    width: 75vw; 
+    max-width: 600px;
+    min-height: 50vh; 
+    padding: 18% 5% 8% 5%;
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center;
+    gap: 2vh; 
 }
 
 .feedback-modal-content h1 {
-    font-size: 2vw; color: white;
-    text-shadow: 3px 3px 5px #000; -webkit-text-stroke: 2px #5C3D2E;
+    transform: translate(0%, -50%);
+    font-size: 4.8vw; 
+    color: var(--cor-secundaria);
+    text-shadow: 3px 3px 5px #000; 
+    -webkit-text-stroke: 1.5px var(--cor-primaria);
+    text-align: center;
+    line-height: 1.1;
+    margin-bottom: 1vh;
 }
 
-/* MUDANÇA: Estilo de botão de texto para o modal */
 .btn-feedback-modal {
-    background: none; border: none; font-family: 'Lilita One', cursive;
-    font-size: 2vw;
-    color: white; text-shadow: 2px 2px 4px #000;
-    cursor: pointer; transition: transform 0.2s; margin-top: 1vh;
+    background: var(--cor-sucesso); 
+    border: 4px solid #27ae60; 
+    transform: translate(0%, -50%);
+    border-radius: 15px;
+    font-family: 'Super Chiby', cursive; 
+    font-size: 5vw;
+    color: var(--cor-texto); 
+    padding: 10px 30px;
+    cursor: pointer; 
+    margin-top: 5vh;
+    box-shadow: 0 5px 0 #27ae60; 
+    text-shadow: 2px 2px 0 #000;
 }
-.btn-feedback-modal:hover { transform: scale(1.1); }
 
-/* --- BOTÕES DE MADEIRA --- */
+#btn-tentar-novamente-modal { 
+    transform: translate(0%, -90%);
+    background: #e67e22; 
+    border-color: #d35400; 
+    box-shadow: 0 5px 0 #d35400; 
+}
+
 .btn-madeira {
-    font-family: 'Lilita One', cursive; color: white; background-color: transparent;
-    background-repeat: no-repeat; background-size: contain; background-position: center; border: none;
-    cursor: pointer; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); transition: transform 0.2s ease-out;
-    width: 35vw; max-width: 320px; height: 10.5vw; max-height: 96px;
-    font-size: 2.5vw;
-    display: flex; align-items: center; justify-content: center; padding-bottom: 0.5vw;
+    transform: translate(0%, -140%);
+    font-family: 'Super Chiby', cursive; 
+    color: var(--cor-texto); 
+    background-color: transparent;
+    background-image: url('../game_assets/images/btn_voltar.webp'); 
+    background-repeat: no-repeat; 
+    background-size: 100% 100%; 
+    background-position: center; 
+    border: none;
+    cursor: pointer; 
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); 
+    transition: transform 0.2s ease-out;
+    width: 60vw; 
+    max-width: 350px; 
+    height: 15vw; 
+    max-height: 100px; 
+    min-height: 60px;
+    font-size: 3.5vw;
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    padding-bottom: 1vw;
+    white-space: nowrap; 
+    margin-top: 1vh;
 }
-.btn-madeira:hover { transform: scale(1.05); }
-.btn-madeira.btn-voltar { background-image: url('../game_assets/images/btn_voltar.png'); }
 
-/* --- RESPONSIVIDADE --- */
+/* ===== RESPONSIVIDADE MOBILE (Portrait) ===== */
 @media (max-width: 768px), (orientation: portrait) {
-    #game-container { aspect-ratio: 9/16; max-height: 100vh; }
+    #game-container { 
+        aspect-ratio: 9/16; 
+        max-height: 100vh; 
+    }
     
-    .painel-madeira-popup { width: 95vw; }
-    .painel-madeira-popup h2 { font-size: 8vw; }
-    .opcao-item { font-size: 5vw; }
-    .creditos-lista { font-size: 3.5vw; }
-    .btn-fechar-popup { font-size: 2.5rem; top: 0; right: 5px; }
-    .parabens-subtexto { font-size: 4vw; }
+    .painel-madeira-popup { 
+        width: 92vw; 
+        padding: 30% 6% 10% 6%;
+    }
+    
+    .painel-madeira-popup h2 { 
+        font-size: 10vw; 
+        top: 12%; 
+    }
+    
+    .btn-fechar-popup { 
+        width: 40px; 
+        height: 40px; 
+        font-size: 1.5rem; 
+        right: 10%; 
+        top: 12%; 
+    }
+    
+    .opcao-item span { 
+        font-size: 7vw; 
+    }
+    
+    .creditos-lista { 
+        font-size: 4.5vw; 
+    }
+    
+    .feedback-modal-content { 
+        width: 88vw; 
+        padding-top: 30%; 
+    }
+    
+    .feedback-modal-content h1 { 
+        font-size: 9vw; 
+    }
+    
+    .btn-feedback-modal { 
+        font-size: 7vw; 
+    }
 
-    .feedback-modal-content { width: 90vw; }
-    .feedback-modal-content h1 { font-size: 7vw; }
-    .btn-feedback-modal { font-size: 6vw; }
-    .btn-madeira { font-size: 5vw; }
+    /* Ajustes específicos Fim de Jogo Mobile */
+    .conteudo-fim-jogo { 
+        padding-top: 35%; 
+    }
+    
+    .trofeu-img { 
+        height: 18vh; 
+    }
+    
+    .texto-vitoria { 
+        font-size: 5vw; 
+    }
+    
+    .btn-madeira { 
+        width: 70vw; 
+        height: 18vw; 
+        font-size: 6vw; 
+    }
 
-    #imagem-fase { height: 30vh; max-height: none; }
-    #tela-inicial .titulo-imagem { width: 80vw; top: 15%; }
-    #tela-inicial .personagem-inicial { width: 50vw; left: 5%; }
-    #btn-jogar { font-size: 7vw; bottom: 40%;}
-    #btn-opcoes { font-size: 6vw; bottom: 30%; }
-    #btn-creditos { font-size: 6vw; bottom: 20%; }
+    #imagem-fase { 
+        height: 25vh; 
+    }
+    
+    #tela-inicial .titulo-imagem { 
+        width: 90vw; 
+        top: 15%; 
+    }
+    
+    #tela-inicial .personagem-inicial { 
+        width: 50vw; 
+        left: 5%; 
+        bottom: 5%; 
+    }
+    
+    .menu-botoes { 
+        top: 65%; 
+        gap: 2vh; 
+    }
+    
+    #btn-jogar { 
+        font-size: 12vw; 
+    }
+    
+    #btn-opcoes { 
+        font-size: 9vw; 
+    }
+    
+    #btn-creditos { 
+        font-size: 7vw; 
+    }
+    
+    .letra-placeholder { 
+        width: 14vw; 
+        height: 14vw; 
+        font-size: 8vw; 
+    }
+    
+    .letra-balao { 
+        width: 15vw; 
+        height: 15vw; 
+        font-size: 9vw; 
+    }
+    
+    #btn-backspace { 
+        width: 13vw; 
+        height: 13vw; 
+        font-size: 7vw; 
+    }
 }
 
-/* --- ESTILOS ADICIONAIS --- */
-.switch { position: relative; display: inline-block; width: 60px; height: 34px; }
-.switch input { opacity: 0; width: 0; height: 0; }
-.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; }
-.slider:before { position: absolute; content: ""; height: 26px; width: 26px; left: 4px; bottom: 4px; background-color: white; transition: .4s; }
-input:checked + .slider { background-color: #2196F3; }
-input:checked + .slider:before { transform: translateX(26px); }
-.slider.round { border-radius: 34px; }
-.slider.round:before { border-radius: 50%; }
+/* ===== FONTE LOCAL ===== */
+@font-face {
+    font-family: 'Super Chiby';
+    src: url('../game_assets/fonts/Super Chiby.ttf') format('truetype');
+}

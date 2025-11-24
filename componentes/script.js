@@ -1,244 +1,442 @@
+/**
+ * PALAVRAS MÁGICAS - Jogo Educativo
+ * Módulo Principal - script.js
+ * 
+ * Este arquivo contém a lógica principal do jogo "Palavras Mágicas",
+ * um jogo educativo onde o jogador forma palavras a partir de letras disponíveis.
+ * 
+ * @version 1.0.0
+ * @author Equipe de Desenvolvimento
+ */
+
+// ===== CONSTANTES E CONFIGURAÇÕES =====
+const CONFIG = {
+    audio: {
+        musicaVol: 0.5,
+        sfxVol: 1.0
+    },
+    jogo: {
+        tempoFeedback: 500 // ms
+    }
+};
+
+// ===== VARIÁVEIS GLOBAIS =====
+let niveis = [];
+let nivelAtual = 0;
+let palavraCorreta = '';
+let letrasAdivinhadas = [];
+
+// ===== ELEMENTOS DOM =====
+const DOM = {};
+const SONS = {};
+
+// ===== INICIALIZAÇÃO DO JOGO =====
 document.addEventListener('DOMContentLoaded', () => {
+    inicializarJogo();
+});
 
-    // --- SELEÇÃO DOS ELEMENTOS DO DOM ---
-    const telaInicial = document.getElementById('tela-inicial');
-    const telaJogo = document.getElementById('tela-jogo');
-    const telaOpcoes = document.getElementById('tela-opcoes');
-    const telaCreditos = document.getElementById('tela-creditos');
-    const telaFimJogo = document.getElementById('tela-fim-jogo');
-
-    const btnJogar = document.getElementById('btn-jogar');
-    const btnOpcoes = document.getElementById('btn-opcoes');
-    const btnCreditos = document.getElementById('btn-creditos');
-    const btnVoltarMenuFinal = document.getElementById('btn-voltar-menu-final');
-    const btnVoltarMenu = document.getElementById('btn-voltar-menu');
-    const btnFecharOpcoes = document.getElementById('btn-fechar-opcoes');
-    const btnFecharCreditos = document.getElementById('btn-fechar-creditos');
-
-    const numeroFaseEl = document.getElementById('numero-fase');
-    const imagemFaseEl = document.getElementById('imagem-fase');
-    const palavraContainerEl = document.getElementById('palavra-container');
-    const letrasBaralhoEl = document.getElementById('letras-baralho');
-
-    const modalFeedback = document.getElementById('modal-feedback');
-
-    const musicaFundo = document.getElementById('musica-fundo');
-    const toggleMusica = document.getElementById('toggle-musica');
-    const toggleSfx = document.getElementById('toggle-sfx');
-    const somAcerto = new Audio('../game_assets/sounds/correct.mp3');
-    const somErro = new Audio('../game_assets/sounds/incorrect.mp3');
-    const somSucesso = new Audio('../game_assets/sounds/sucess.mp3');
-
-    // --- VARIÁVEIS DE ESTADO DO JOGO ---
-    let niveis = [];
-    let nivelAtual = 0;
-    let palavraCorreta = '';
-    let letrasAdivinhadas = [];
-    let musicaLigada = true;
-    let sfxLigados = true;
-
-    // --- FUNÇÕES PRINCIPAIS ---
-
-    async function carregarDadosJogo() {
-        try {
-            const response = await fetch('../game_assets/data/niveis.json');
-            niveis = await response.json();
-        } catch (error) {
-            console.error('Erro ao carregar os níveis do jogo:', error);
-            alert('Não foi possível carregar os dados do jogo.');
-        }
+/**
+ * Inicializa o jogo configurando todos os componentes necessários
+ */
+function inicializarJogo() {
+    try {
+        mapearElementosDom();
+        carregarSons();
+        configurarEventos();
+        carregarDadosJogo();
+        tentarIniciarMusica();
+        console.log('Jogo inicializado com sucesso!');
+    } catch (error) {
+        console.error('Erro ao inicializar o jogo:', error);
     }
+}
 
-    function mostrarTela(telaParaMostrar) {
-        document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa'));
-        telaParaMostrar.classList.add('ativa');
-    }
+/**
+ * Mapeia todos os elementos DOM necessários para o jogo
+ */
+function mapearElementosDom() {
+    // Telas
+    DOM.telaInicial = document.getElementById('tela-inicial');
+    DOM.telaJogo = document.getElementById('tela-jogo');
+    DOM.telaOpcoes = document.getElementById('tela-opcoes');
+    DOM.telaCreditos = document.getElementById('tela-creditos');
+    DOM.telaFimJogo = document.getElementById('tela-fim-jogo');
+    DOM.modalFeedback = document.getElementById('modal-feedback');
 
-    function iniciarJogo() {
-        nivelAtual = 0;
-        carregarNivel(nivelAtual);
-        mostrarTela(telaJogo);
-        tocarMusica();
-    }
+    // Botões
+    DOM.btnJogar = document.getElementById('btn-jogar');
+    DOM.btnOpcoes = document.getElementById('btn-opcoes');
+    DOM.btnCreditos = document.getElementById('btn-creditos');
+    DOM.btnVoltarMenuFinal = document.getElementById('btn-voltar-menu-final');
+    DOM.btnVoltarMenu = document.getElementById('btn-voltar-menu');
+    DOM.btnFecharOpcoes = document.getElementById('btn-fechar-opcoes');
+    DOM.btnFecharCreditos = document.getElementById('btn-fechar-creditos');
+    DOM.btnBackspace = document.getElementById('btn-backspace');
+    DOM.botoesGerais = document.querySelectorAll("button");
 
-    function carregarNivel(index) {
-        if (index >= niveis.length) {
-            finalizarJogo();
-            return;
-        }
+    // Elementos do Jogo
+    DOM.numeroFase = document.getElementById('numero-fase');
+    DOM.imagemFase = document.getElementById('imagem-fase');
+    DOM.palavraContainer = document.getElementById('palavra-container');
+    DOM.letrasBaralho = document.getElementById('letras-baralho');
 
-        const nivel = niveis[index];
-        palavraCorreta = nivel.palavra.toUpperCase();
-        letrasAdivinhadas = Array(palavraCorreta.length).fill(null);
+    // Áudio e Inputs
+    DOM.musicaFundo = document.getElementById('musica-fundo');
+    DOM.sliderMusica = document.getElementById('slider-musica');
+    DOM.sliderSfx = document.getElementById('slider-sfx');
+}
 
-        numeroFaseEl.textContent = `FASE ${nivel.nivel}`;
-        imagemFaseEl.src = nivel.imagem;
-
-        palavraContainerEl.innerHTML = '';
-        letrasBaralhoEl.innerHTML = '';
-
-        palavraCorreta.split('').forEach(() => {
-            const placeholder = document.createElement('div');
-            placeholder.classList.add('letra-placeholder');
-            palavraContainerEl.appendChild(placeholder);
-        });
-
-        const letrasDoBaralho = gerarLetrasParaBaralho(palavraCorreta);
-        letrasDoBaralho.forEach(letra => {
-            const balao = document.createElement('div');
-            balao.classList.add('letra-balao');
-            balao.textContent = letra;
-            balao.addEventListener('click', () => selecionarLetra(balao));
-            letrasBaralhoEl.appendChild(balao);
-        });
-    }
-
-    function gerarLetrasParaBaralho(palavra) {
-        const letrasDaPalavra = [...new Set(palavra.split(''))];
-        const alfabeto = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        let letrasExtras = [];
-        const totalLetrasNoBaralho = Math.min(letrasDaPalavra.length + 4, 12);
-
-        while (letrasExtras.length < totalLetrasNoBaralho - letrasDaPalavra.length) {
-            const letraAleatoria = alfabeto[Math.floor(Math.random() * alfabeto.length)];
-            if (!letrasDaPalavra.includes(letraAleatoria) && !letrasExtras.includes(letraAleatoria)) {
-                letrasExtras.push(letraAleatoria);
-            }
-        }
+/**
+ * Carrega e configura os sons do jogo
+ */
+function carregarSons() {
+    try {
+        SONS.clique = new Audio("../game_assets/sounds/click.mp3");
+        SONS.acerto = new Audio('../game_assets/sounds/correct.mp3');
+        SONS.erro = new Audio('../game_assets/sounds/incorrect.mp3');
+        SONS.sucesso = new Audio('../game_assets/sounds/sucess.mp3');
         
-        const baralho = [...letrasDaPalavra, ...letrasExtras];
-        return baralho.sort(() => Math.random() - 0.5);
+        atualizarVolumeMusica(CONFIG.audio.musicaVol);
+    } catch (error) {
+        console.error('Erro ao carregar sons:', error);
     }
+}
 
-    function selecionarLetra(balao) {
-        const proximoIndexVazio = letrasAdivinhadas.indexOf(null);
-        if (proximoIndexVazio === -1) return;
+/**
+ * Configura todos os eventos do jogo
+ */
+function configurarEventos() {
+    // Navegação entre telas
+    DOM.btnJogar.addEventListener('click', iniciarJogo);
+    DOM.btnOpcoes.addEventListener('click', () => mostrarTela(DOM.telaOpcoes));
+    DOM.btnCreditos.addEventListener('click', () => mostrarTela(DOM.telaCreditos));
+    DOM.btnVoltarMenuFinal.addEventListener('click', () => mostrarTela(DOM.telaInicial));
+    DOM.btnVoltarMenu.addEventListener('click', () => mostrarTela(DOM.telaInicial));
+    DOM.btnFecharOpcoes.addEventListener('click', () => mostrarTela(DOM.telaInicial));
+    DOM.btnFecharCreditos.addEventListener('click', () => mostrarTela(DOM.telaInicial));
+    
+    // Controles de jogo
+    DOM.btnBackspace.addEventListener('click', removerUltimaLetra);
 
-        const letraSelecionada = balao.textContent;
-        letrasAdivinhadas[proximoIndexVazio] = letraSelecionada;
+    // Configurações de áudio
+    DOM.sliderMusica.addEventListener('input', (e) => {
+        CONFIG.audio.musicaVol = parseFloat(e.target.value);
+        atualizarVolumeMusica(CONFIG.audio.musicaVol);
+    });
 
-        const placeholder = palavraContainerEl.children[proximoIndexVazio];
-        placeholder.textContent = letraSelecionada;
-        
-        tocarSom(somAcerto);
+    DOM.sliderSfx.addEventListener('input', (e) => {
+        CONFIG.audio.sfxVol = parseFloat(e.target.value);
+    });
 
-        if (!letrasAdivinhadas.includes(null)) {
-            setTimeout(verificarPalavra, 500);
+    // Som de clique para todos os botões
+    DOM.botoesGerais.forEach(botao => {
+        botao.addEventListener("click", () => {
+            executarSom(SONS.clique);
+        });
+    });
+}
+
+// ===== GERENCIAMENTO DE DADOS =====
+
+/**
+ * Carrega os dados dos níveis do jogo
+ */
+async function carregarDadosJogo() {
+    try {
+        const response = await fetch('../game_assets/data/niveis.json');
+        if (!response.ok) {
+            throw new Error(`Erro HTTP: ${response.status}`);
         }
+        niveis = await response.json();
+        console.log(`Carregados ${niveis.length} níveis`);
+    } catch (error) {
+        console.error('Erro ao carregar níveis:', error);
+        // Fallback para níveis básicos em caso de erro
+        niveis = [
+            { nivel: 1, palavra: "SOL", imagem: "../game_assets/images/sol.webp" },
+            { nivel: 2, palavra: "GATO", imagem: "../game_assets/images/gato.webp" }
+        ];
+    }
+}
+
+// ===== GERENCIAMENTO DE ÁUDIO =====
+
+/**
+ * Tenta iniciar a música de fundo, com fallback para interação do usuário
+ */
+function tentarIniciarMusica() {
+    const promessa = DOM.musicaFundo.play();
+    if (promessa !== undefined) {
+        promessa.catch(() => {
+            document.body.addEventListener('click', () => {
+                if (DOM.musicaFundo.paused) {
+                    DOM.musicaFundo.play().catch(e => console.warn('Não foi possível reproduzir música:', e));
+                }
+            }, { once: true });
+        });
+    }
+}
+
+/**
+ * Atualiza o volume da música de fundo
+ * @param {number} volume - Volume entre 0 e 1
+ */
+function atualizarVolumeMusica(volume) {
+    DOM.musicaFundo.volume = volume;
+}
+
+/**
+ * Executa um efeito sonoro
+ * @param {Audio} audioObj - Objeto de áudio a ser executado
+ */
+function executarSom(audioObj) {
+    if (!audioObj) return;
+    
+    if (CONFIG.audio.sfxVol > 0) {
+        audioObj.volume = CONFIG.audio.sfxVol;
+        audioObj.currentTime = 0;
+        audioObj.play().catch(() => {
+            console.warn('Não foi possível reproduzir efeito sonoro');
+        });
+    }
+}
+
+// ===== GERENCIAMENTO DE TELAS =====
+
+/**
+ * Mostra uma tela específica e esconde as demais
+ * @param {HTMLElement} telaParaMostrar - Elemento da tela a ser mostrada
+ */
+function mostrarTela(telaParaMostrar) {
+    Object.values(DOM).forEach(el => {
+        if (el && el.classList && el.classList.contains('tela')) {
+            el.classList.remove('ativa');
+        }
+    });
+    telaParaMostrar.classList.add('ativa');
+}
+
+// ===== LÓGICA DO JOGO =====
+
+/**
+ * Inicia o jogo a partir do primeiro nível
+ */
+function iniciarJogo() {
+    nivelAtual = 0;
+    carregarNivel(nivelAtual);
+    mostrarTela(DOM.telaJogo);
+}
+
+/**
+ * Carrega um nível específico do jogo
+ * @param {number} index - Índice do nível a ser carregado
+ */
+function carregarNivel(index) {
+    if (index >= niveis.length) {
+        finalizarJogo();
+        return;
     }
 
-    function verificarPalavra() {
-        const palavraFormada = letrasAdivinhadas.join('');
-        if (palavraFormada === palavraCorreta) {
-            nivelConcluido();
-        } else {
-            tentativaIncorreta();
+    const nivel = niveis[index];
+    palavraCorreta = nivel.palavra.toUpperCase();
+    letrasAdivinhadas = Array(palavraCorreta.length).fill(null);
+
+    // Atualizar interface
+    DOM.numeroFase.textContent = `FASE ${nivel.nivel}`;
+    DOM.imagemFase.src = nivel.imagem;
+    DOM.imagemFase.alt = `Imagem representando a palavra ${nivel.palavra}`;
+
+    // Limpar elementos anteriores
+    DOM.palavraContainer.innerHTML = '';
+    DOM.letrasBaralho.innerHTML = '';
+
+    // Criar placeholders para a palavra
+    palavraCorreta.split('').forEach(() => {
+        const placeholder = document.createElement('div');
+        placeholder.classList.add('letra-placeholder');
+        DOM.palavraContainer.appendChild(placeholder);
+    });
+
+    // Preparar e exibir letras do baralho
+    const letrasDoBaralho = prepararLetrasBaralho(nivel);
+    
+    letrasDoBaralho.forEach(letra => {
+        const balao = document.createElement('div');
+        balao.classList.add('letra-balao');
+        balao.textContent = letra;
+        balao.setAttribute('role', 'button');
+        balao.setAttribute('aria-label', `Letra ${letra}`);
+        balao.addEventListener('click', () => selecionarLetra(balao));
+        DOM.letrasBaralho.appendChild(balao);
+    });
+}
+
+/**
+ * Prepara as letras do baralho para o nível atual
+ * @param {Object} nivel - Objeto do nível atual
+ * @returns {Array} Array de letras embaralhadas
+ */
+function prepararLetrasBaralho(nivel) {
+    let letras = nivel.letrasEmbaralhadas ? 
+        [...nivel.letrasEmbaralhadas] : 
+        gerarLetrasAleatorias(nivel.palavra);
+    
+    return embaralharArray(letras);
+}
+
+/**
+ * Embaralha um array usando o algoritmo Fisher-Yates
+ * @param {Array} array - Array a ser embaralhado
+ * @returns {Array} Array embaralhado
+ */
+function embaralharArray(array) {
+    const novoArray = [...array];
+    for (let i = novoArray.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [novoArray[i], novoArray[j]] = [novoArray[j], novoArray[i]];
+    }
+    return novoArray;
+}
+
+/**
+ * Gera letras aleatórias para completar o baralho
+ * @param {string} palavra - Palavra do nível atual
+ * @returns {Array} Array de letras para o baralho
+ */
+function gerarLetrasAleatorias(palavra) {
+    const letrasDaPalavra = [...new Set(palavra.toUpperCase().split(''))];
+    const alfabeto = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let letrasExtras = [];
+    
+    while (letrasExtras.length < (12 - letrasDaPalavra.length)) {
+        const l = alfabeto[Math.floor(Math.random() * alfabeto.length)];
+        if (!letrasDaPalavra.includes(l) && !letrasExtras.includes(l)) {
+            letrasExtras.push(l);
         }
     }
     
-    function nivelConcluido() {
-        tocarSom(somSucesso);
-        mostrarFeedback(true);
+    return [...letrasDaPalavra, ...letrasExtras];
+}
+
+/**
+ * Processa a seleção de uma letra pelo jogador
+ * @param {HTMLElement} balao - Elemento do balão de letra clicado
+ */
+function selecionarLetra(balao) {
+    const proximoIndexVazio = letrasAdivinhadas.indexOf(null);
+    if (proximoIndexVazio === -1) return;
+
+    const letraSelecionada = balao.textContent;
+    letrasAdivinhadas[proximoIndexVazio] = letraSelecionada;
+
+    const placeholder = DOM.palavraContainer.children[proximoIndexVazio];
+    placeholder.textContent = letraSelecionada;
+    
+    executarSom(SONS.acerto);
+
+    // Verificar se todas as letras foram preenchidas
+    if (!letrasAdivinhadas.includes(null)) {
+        setTimeout(verificarPalavra, CONFIG.jogo.tempoFeedback);
+    }
+}
+
+/**
+ * Remove a última letra adicionada à palavra
+ */
+function removerUltimaLetra() {
+    let indexParaRemover = -1;
+    for (let i = letrasAdivinhadas.length - 1; i >= 0; i--) {
+        if (letrasAdivinhadas[i] !== null) {
+            indexParaRemover = i;
+            break;
+        }
     }
 
-    function tentativaIncorreta() {
-        tocarSom(somErro);
+    if (indexParaRemover !== -1) {
+        letrasAdivinhadas[indexParaRemover] = null;
+        const placeholder = DOM.palavraContainer.children[indexParaRemover];
+        placeholder.textContent = '';
+        executarSom(SONS.clique);
+    }
+}
+
+/**
+ * Verifica se a palavra formada está correta
+ */
+function verificarPalavra() {
+    const palavraFormada = letrasAdivinhadas.join('');
+    if (palavraFormada === palavraCorreta) {
+        executarSom(SONS.sucesso);
+        mostrarFeedback(true);
+    } else {
+        executarSom(SONS.erro);
         mostrarFeedback(false);
     }
+}
+
+// ===== FEEDBACK E PROGRESSO =====
+
+/**
+ * Exibe feedback visual para o jogador
+ * @param {boolean} isCorrect - Indica se a resposta está correta
+ */
+function mostrarFeedback(isCorrect) {
+    let htmlContent;
     
-    function resetarTentativa() {
-        letrasAdivinhadas.fill(null);
-        for (let placeholder of palavraContainerEl.children) {
-            placeholder.textContent = '';
-        }
+    if (isCorrect) {
+        htmlContent = `
+            <div class="feedback-modal-content">
+                <h1>MUITO BEM!</h1>
+                <button id="btn-continuar-modal" class="btn-feedback-modal">CONTINUAR</button>
+            </div>
+        `;
+    } else {
+        htmlContent = `
+            <div class="feedback-modal-content">
+                <h1>OPS...<br>TENTE DE NOVO!</h1>
+                <button id="btn-tentar-novamente-modal" class="btn-feedback-modal">VOLTAR</button>
+            </div>
+        `;
     }
 
-    function mostrarFeedback(isCorrect) {
-        let conteudoModal;
+    DOM.modalFeedback.innerHTML = htmlContent;
+    DOM.modalFeedback.classList.add('visivel');
+
+    const btnAcao = isCorrect ? 
+        document.getElementById('btn-continuar-modal') : 
+        document.getElementById('btn-tentar-novamente-modal');
+
+    btnAcao.addEventListener('click', () => {
+        executarSom(SONS.clique);
+        DOM.modalFeedback.classList.remove('visivel');
         if (isCorrect) {
-            conteudoModal = `
-                <div class="feedback-modal-content">
-                    <h1>MUITO BEM!</h1>
-                    <button id="btn-continuar-modal" class="btn-feedback-modal">CONTINUAR</button>
-                </div>
-            `;
+            avancarNivel();
         } else {
-            conteudoModal = `
-                <div class="feedback-modal-content">
-                    <h1>PALAVRA ERRADA!</h1>
-                    <button id="btn-tentar-novamente-modal" class="btn-feedback-modal">TENTAR NOVAMENTE</button>
-                </div>
-            `;
+            resetarTentativa();
         }
-        
-        modalFeedback.innerHTML = conteudoModal;
-        modalFeedback.classList.add('visivel');
-
-        if (isCorrect) {
-            document.getElementById('btn-continuar-modal').addEventListener('click', () => {
-                modalFeedback.classList.remove('visivel');
-                avancarNivel();
-            });
-        } else {
-            document.getElementById('btn-tentar-novamente-modal').addEventListener('click', () => {
-                modalFeedback.classList.remove('visivel');
-                resetarTentativa();
-            });
-        }
-    }
-
-    function avancarNivel() {
-        nivelAtual++;
-        carregarNivel(nivelAtual);
-        mostrarTela(telaJogo);
-    }
-    
-    function finalizarJogo() {
-        mostrarTela(telaFimJogo);
-        musicaFundo.pause();
-    }
-
-    function tocarSom(som) {
-        if (sfxLigados) {
-            som.currentTime = 0;
-            som.play();
-        }
-    }
-    
-    function tocarMusica() {
-        if (musicaLigada) {
-            musicaFundo.play();
-        } else {
-            musicaFundo.pause();
-        }
-    }
-
-    // --- EVENT LISTENERS ---
-
-    btnJogar.addEventListener('click', iniciarJogo);
-    btnOpcoes.addEventListener('click', () => mostrarTela(telaOpcoes));
-    btnCreditos.addEventListener('click', () => mostrarTela(telaCreditos));
-
-    btnVoltarMenuFinal.addEventListener('click', () => {
-        mostrarTela(telaInicial);
     });
-    
-    btnVoltarMenu.addEventListener('click', () => {
-        musicaFundo.pause();
-        mostrarTela(telaInicial);
-    });
+}
 
-    btnFecharOpcoes.addEventListener('click', () => mostrarTela(telaInicial));
-    btnFecharCreditos.addEventListener('click', () => mostrarTela(telaInicial));
+/**
+ * Reseta a tentativa atual, permitindo ao jogador tentar novamente
+ */
+function resetarTentativa() {
+    letrasAdivinhadas.fill(null);
+    Array.from(DOM.palavraContainer.children).forEach(p => p.textContent = '');
+}
 
-    toggleMusica.addEventListener('change', (e) => {
-        musicaLigada = e.target.checked;
-        tocarMusica();
-    });
+/**
+ * Avança para o próximo nível
+ */
+function avancarNivel() {
+    nivelAtual++;
+    carregarNivel(nivelAtual);
+}
 
-    toggleSfx.addEventListener('change', (e) => {
-        sfxLigados = e.target.checked;
-    });
-
-    carregarDadosJogo();
-});
+/**
+ * Finaliza o jogo quando todos os níveis são completados
+ */
+function finalizarJogo() {
+    mostrarTela(DOM.telaFimJogo);
+    executarSom(SONS.sucesso);
+}
