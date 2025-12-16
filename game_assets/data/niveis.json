@@ -28,5 +28,35 @@
     "palavra": "ELEFANTE",
     "imagem": "../game_assets/images/elefante.webp",
     "letrasEmbaralhadas": ["E", "L", "E", "F", "A", "N", "T", "E", "R", "S", "I"]
+  },
+  {
+    "nivel": 6,
+    "palavra": "LUA",
+    "imagem": "",
+    "letrasEmbaralhadas": ["L", "U", "A", "F", "O","G"]
+  },
+   {
+    "nivel": 7,
+    "palavra": "CACHORRO",
+    "imagem": "",
+    "letrasEmbaralhadas": ["C", "A","C", "H", "O", "R", "R", "O", "T", "D", "E"]
+  },
+   {
+    "nivel": 8,
+    "palavra": "ABACAXI",
+    "imagem": "",
+    "letrasEmbaralhadas": ["A", "B", "A", "C", "A", "X", "I", "M", "R", "L"]
+  },
+   {
+    "nivel": 9,
+    "palavra": "BANANA",
+    "imagem": "",
+    "letrasEmbaralhadas": ["B", "A", "N", "A", "N", "A", "H", "C", "J"]
+  },
+   {
+    "nivel": 10,
+    "palavra": "CARRO",
+    "imagem": "",
+    "letrasEmbaralhadas": ["C", "A", "R", "R", "O", "P", "V", "S"]
   }
 ]
