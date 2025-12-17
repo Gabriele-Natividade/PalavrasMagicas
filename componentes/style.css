@@ -29,7 +29,7 @@ body {
 }
 .btn-texto-menu {
     position: absolute; left: 50%; transform: translateX(-50%); background: none; border: none;
-    font-family: "Mystery Quest", system-ui; font-size: 3vw; color: white;
+    font-family: "Nunito", sans-serif; font-size: 3vw; color: white;
     text-shadow: 2px 2px 5px rgba(0,0,0,0.7); cursor: pointer; transition: transform 0.2s ease-in-out;
 }
 .btn-texto-menu:hover { transform: translateX(-50%) scale(1.1); }
