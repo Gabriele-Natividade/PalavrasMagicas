@@ -17,6 +17,12 @@ const CONFIG = {
     },
     jogo: {
         tempoFeedback: 500 // ms
+    },
+    zoom: {
+        default: 100, // valor padrão em %
+        min: 10,
+        max: 200,
+        step: 10
     }
 };
 
@@ -43,8 +49,10 @@ function inicializarJogo() {
         mapearElementosDom();
         carregarSons();
         configurarEventos();
+        configurarZoom(); // Nova função
         carregarDadosJogo();
         tentarIniciarMusica();
+        aplicarZoomSalvo();
         console.log('Jogo inicializado com sucesso!');
     } catch (error) {
         console.error('Erro ao inicializar o jogo:', error);
@@ -55,6 +63,9 @@ function inicializarJogo() {
  * Mapeia todos os elementos DOM necessários para o jogo
  */
 function mapearElementosDom() {
+    // Container Principal (Adicionado para funcionar o Zoom)
+    DOM.gameContainer = document.getElementById('game-container');
+
     // Telas
     DOM.telaInicial = document.getElementById('tela-inicial');
     DOM.telaJogo = document.getElementById('tela-jogo');
@@ -84,6 +95,93 @@ function mapearElementosDom() {
     DOM.musicaFundo = document.getElementById('musica-fundo');
     DOM.sliderMusica = document.getElementById('slider-musica');
     DOM.sliderSfx = document.getElementById('slider-sfx');
+
+    // Novos elementos de zoom
+    DOM.btnZoom = document.getElementById('btn-zoom');
+    DOM.zoomDropdown = document.getElementById('zoom-dropdown');
+}
+
+/**
+ * Configura o dropdown de zoom e seus eventos
+ */
+function configurarZoom() {
+    // Gerar opções de 10% a 200%
+    for (let i = CONFIG.zoom.min; i <= CONFIG.zoom.max; i += CONFIG.zoom.step) {
+        const btn = document.createElement('button');
+        btn.classList.add('zoom-option');
+        btn.textContent = `${i}%`;
+        btn.dataset.zoom = i;
+        btn.addEventListener('click', () => {
+            aplicarZoom(i);
+            fecharDropdownZoom();
+            marcarOpcaoAtiva(i);
+            salvarZoomPreferido(i);
+            executarSom(SONS.clique);
+        });
+        DOM.zoomDropdown.appendChild(btn);
+    }
+
+    // Toggle do dropdown
+    DOM.btnZoom.addEventListener('click', (e) => {
+        e.stopPropagation();
+        DOM.zoomDropdown.classList.toggle('aberto');
+        executarSom(SONS.clique);
+    });
+
+    // Fechar dropdown ao clicar fora
+    document.addEventListener('click', () => {
+        DOM.zoomDropdown.classList.remove('aberto');
+    });
+
+    // Impedir que clique no dropdown feche ele mesmo
+    DOM.zoomDropdown.addEventListener('click', (e) => {
+        e.stopPropagation();
+    });
+}
+
+/**
+ * Aplica o zoom na página (todo o game-container)
+ * @param {number} percentual 
+ */
+function aplicarZoom(percentual) {
+    const escala = percentual / 100;
+    if(DOM.gameContainer) {
+        DOM.gameContainer.style.transform = `scale(${escala})`;
+    }
+}
+
+/**
+ * Marca visualmente a opção atualmente selecionada
+ * @param {number} percentual 
+ */
+function marcarOpcaoAtiva(percentual) {
+    document.querySelectorAll('.zoom-option').forEach(opt => {
+        opt.classList.toggle('ativo', parseInt(opt.dataset.zoom) === percentual);
+    });
+}
+
+/**
+ * Salva a preferência de zoom no localStorage
+ * @param {number} percentual 
+ */
+function salvarZoomPreferido(percentual) {
+    localStorage.setItem('palavrasMagicas_zoom', percentual);
+}
+
+/**
+ * Aplica o zoom salvo (ou padrão) ao iniciar o jogo
+ */
+function aplicarZoomSalvo() {
+    const salvo = parseInt(localStorage.getItem('palavrasMagicas_zoom')) || CONFIG.zoom.default;
+    aplicarZoom(salvo);
+    marcarOpcaoAtiva(salvo);
+}
+
+/**
+ * Fecha o dropdown de zoom
+ */
+function fecharDropdownZoom() {
+    DOM.zoomDropdown.classList.remove('aberto');
 }
 
 /**

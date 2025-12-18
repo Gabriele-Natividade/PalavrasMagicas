@@ -23,7 +23,7 @@
 }
 
 body {
-    font-family: 'Super Chiby', sans-serif;
+    font-family: 'LilitaOne-Regular';
     background-image: url('../game_assets/images/background_novo.webp');
     background-size: cover; 
     background-position: center; 
@@ -45,6 +45,8 @@ body {
     max-width: 1280px; 
     max-height: 720px; 
     aspect-ratio: 16/9;
+    transform-origin: center center; /* Garante que o zoom ocorra a partir do centro */
+    transition: transform 0.3s ease-out; /* Suaviza a troca de resolução */
 }
 
 /* ===== COMPONENTES DE TELA ===== */
@@ -106,7 +108,7 @@ body {
     background: none; 
     border: none;
     transform: translate(0%, 20%);
-    font-family: 'Super Chiby', sans-serif; 
+    font-family: 'LilitaOne-Regular', sans-serif; 
     color: var(--cor-texto);
     text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
     cursor: pointer; 
@@ -237,7 +239,7 @@ body {
     border: 4px solid #c0392b; 
     border-radius: var(--borda-radius);
     color: var(--cor-texto); 
-    font-family: 'Super Chiby', sans-serif; 
+    font-family: 'LilitaOne-Regular', sans-serif; 
     font-size: 4vw;
     cursor: pointer; 
     display: flex; 
@@ -393,7 +395,7 @@ input[type=range]::-webkit-slider-runnable-track {
     border-radius: var(--borda-radius);
     color: var(--cor-texto); 
     font-size: 2rem; 
-    font-family: 'Super Chiby', cursive;
+    font-family: 'LilitaOne-Regular', cursive;
     cursor: pointer; 
     box-shadow: 2px 2px 5px var(--cor-sombra);
     display: flex; 
@@ -406,6 +408,79 @@ input[type=range]::-webkit-slider-runnable-track {
 .btn-fechar-popup:hover { 
     background-color: var(--cor-erro); 
     transform: scale(1.1); 
+}
+
+/* ===== NOVO: BOTÃO E DROPDOWN DE ZOOM (ATUALIZADO) ===== */
+.btn-zoom {
+    position: absolute;
+    bottom: 8%;
+    right: 8%;
+    width: auto; /* Alterado de fixo para auto */
+    height: 60px;
+    padding: 0 20px; /* Adicionado padding */
+    background-color: rgba(92, 61, 46, 0.8);
+    border: 4px solid var(--cor-secundaria);
+    border-radius: 15px; /* Alterado de 50% para botão retangular */
+    color: var(--cor-texto);
+    font-family: 'LilitaOne-Regular', sans-serif; /* Fonte padrão do jogo */
+    font-size: 1.5rem; /* Ajustado para caber o texto */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 10px var(--cor-sombra);
+    z-index: 60;
+    transition: transform 0.2s;
+    white-space: nowrap;
+}
+
+.btn-zoom:hover {
+    transform: scale(1.05);
+}
+
+.zoom-dropdown {
+    position: absolute;
+    bottom: 80px;
+    right: 8%;
+    width: 180px;
+    background-color: rgba(92, 61, 46, 0.95);
+    border: 4px solid var(--cor-secundaria);
+    border-radius: 15px;
+    padding: 10px;
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    box-shadow: 0 8px 15px var(--cor-sombra);
+    z-index: 70;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.zoom-dropdown.aberto {
+    display: flex;
+}
+
+.zoom-option {
+    background-color: var(--cor-primaria);
+    color: var(--cor-texto);
+    border: none;
+    border-radius: 10px;
+    padding: 10px;
+    font-family: 'LilitaOne-Regular', sans-serif;
+    font-size: 1.8rem;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.2s;
+}
+
+.zoom-option:hover {
+    background-color: var(--cor-destaque);
+}
+
+.zoom-option.ativo {
+    background-color: var(--cor-secundaria);
+    color: var(--cor-primaria);
+    font-weight: bold;
 }
 
 /* ===== TELA FIM DE JOGO ===== */
@@ -479,7 +554,7 @@ input[type=range]::-webkit-slider-runnable-track {
     border: 4px solid #27ae60; 
     transform: translate(0%, -50%);
     border-radius: 15px;
-    font-family: 'Super Chiby', cursive; 
+    font-family: 'LilitaOne-Regular', cursive; 
     font-size: 5vw;
     color: var(--cor-texto); 
     padding: 10px 30px;
@@ -498,7 +573,7 @@ input[type=range]::-webkit-slider-runnable-track {
 
 .btn-madeira {
     transform: translate(0%, -140%);
-    font-family: 'Super Chiby', cursive; 
+    font-family: 'LilitaOne-Regular'; 
     color: var(--cor-texto); 
     background-color: transparent;
     background-image: url('../game_assets/images/btn_voltar.webp'); 
@@ -637,10 +712,31 @@ input[type=range]::-webkit-slider-runnable-track {
         height: 13vw; 
         font-size: 7vw; 
     }
+
+    /* Ajustes mobile para o botão de zoom */
+    .btn-zoom {
+        width: auto;
+        height: 50px;
+        font-size: 1.2rem;
+        bottom: 6%;
+        right: 6%;
+        padding: 0 15px;
+    }
+
+    .zoom-dropdown {
+        width: 150px;
+        bottom: 70px;
+        right: 6%;
+    }
+
+    .zoom-option {
+        font-size: 1.5rem;
+        padding: 8px;
+    }
 }
 
 /* ===== FONTE LOCAL ===== */
 @font-face {
-    font-family: 'Super Chiby';
-    src: url('../game_assets/fonts/Super Chiby.ttf') format('truetype');
+    font-family: 'LilitaOne-Regular';
+    src: url('../game_assets/fonts/LilitaOne-Regular.ttf') format('truetype');
 }
